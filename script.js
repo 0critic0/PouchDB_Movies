@@ -1,6 +1,20 @@
 var local_db = new PouchDB('movies_schema_a');
 var remote_db = 'http://admin:mtu12345@localhost:5984/movies_schema_a';
 
+function deleteMovie() {
+    var id = document.getElementById('deleteId').value.trim();
+
+    if (!id) return;
+
+    local_db.get(id).then(function (doc) {
+        return local_db.remove(doc);
+    }).then(function () {
+        alert('Deleted');
+    }).catch(function (err) {
+        console.log('Delete failed:', err.message);
+    });
+}
+
 function updateMovie() {
     var id = document.getElementById('updateId').value.trim();
     var newActors = document.getElementById('updateActors').value.trim();
