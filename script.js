@@ -1,6 +1,22 @@
 var local_db = new PouchDB('movies_schema_a');
 var remote_db = 'http://admin:mtu12345@localhost:5984/movies_schema_a';
 
+function getMovie() {
+    var id = document.getElementById('findId').value.trim();
+
+    if (!id) return;
+
+    local_db.get(id)
+        .then(function (doc) {
+            document.getElementById('result').
+                textContent = JSON.stringify(doc, null, 2);
+        })
+        .catch(function (err) {
+            document.getElementById('result').
+                textContent = 'Not found: ' + err.message;
+        });
+}
+
 function addMovie() {
     var title = document.getElementById('title').value.trim();
     var actors = document.getElementById('actors').value.trim();
@@ -29,8 +45,6 @@ function addMovie() {
         });
     });
 }
-
-
 
 function syncNow() {
     PouchDB.sync(local_db, remote_db, { live: true, retry: true })
