@@ -1,6 +1,30 @@
 var local_db = new PouchDB('movies_schema_a');
 var remote_db = 'http://admin:mtu12345@localhost:5984/movies_schema_a';
 
+function updateMovie() {
+    var id = document.getElementById('updateId').value.trim();
+    var newActors = document.getElementById('updateActors').value.trim();
+    var newGenres = document.getElementById('updateGenres').value.trim();
+
+    if (!id) return;
+
+    local_db.get(id).then(function (doc) {
+        doc.actors = newActors.split(',').
+        map(function (s) { return s.trim(); }).
+        filter(Boolean);
+
+        doc.genres = newGenres.split(',').
+        map(function (s) { return s.trim(); }).
+        filter(Boolean);
+
+        return local_db.put(doc);
+    }).then(function () {
+        alert('Updated');
+    }).catch(function (err) {
+        console.log('Update failed:', err.message);
+    });
+}
+
 function getMovie() {
     var id = document.getElementById('findId').value.trim();
 
